@@ -737,7 +737,10 @@
       "startLabel": "Start",
       "dateRangeRequired": "Date range is required",
       "dateRangeLabel": "Period",
-      "gridAreaDropDownLabel": "Grid Areas"
+      "gridAreaDropDownLabel": "Grid Areas",
+      "creatingBatch": "Starting batch...",
+      "creatingBatchSuccess": "The batch has been started.",
+      "creatingBatchError": "Oops! There was an error."
     },
     "searchBatch": {
       "topBarTitle": "Search Batch",
@@ -827,12 +830,15 @@
   "admin": {
     "userManagement": {
       "drawer": {
-        "edit": "Edit",
-        "active": "Active"
+        "edit": "Edit"
       },
       "topBarTitle": "User management",
       "userStatus": {
-        "active": "Aktiv",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "roleStatus": {
+        "active": "Active",
         "inactive": "Inactive"
       },
       "tabs": {
@@ -840,18 +846,43 @@
           "tabLabel": "Master data",
           "name": "Name",
           "email": "Email",
-          "phone": "Phone"
+          "phone": "Phone",
+          "description": "Description",
+          "marketRole": "Market role"
         },
         "history": {
-          "tabLabel": "History"
+          "tabLabel": "History",
+          "noEntries": "No results",
+          "changesSingular": "{{ auditLogCount }} change",
+          "changesPlural": "{{ auditLogCount }} changes",
+          "columns": {
+            "timestamp": "Time",
+            "entry": "Change"
+          },
+          "logs": {
+            "roles": {
+              "Added": "<b>{{ changedByUserName }}</b> added user role <b>{{ userRoleName }}</b>",
+              "Removed": "<b>{{ changedByUserName }}</b> removed user role <b>{{ userRoleName }}</b>"
+            }
+          },
+          "generalError": {
+            "title": "An unexpected error occured",
+            "message": "Try again or contact your system administrator if you keep getting this error."
+          }
+        },
+        "rights": {
+          "tabLabel": "Rights"
         },
         "users": {
           "tabLabel": "Users",
+          "searchPlaceholder": "Search users",
           "usersHeadline": {
             "singular": "{{ usersCount }} user",
             "plural": "{{ usersCount }} users"
           },
-
+          "filter": {
+            "status": "Status"
+          },
           "table": {
             "columns": {
               "name": "Name",
@@ -869,10 +900,38 @@
           }
         },
         "roles": {
-          "tabLabel": "Roles"
+          "tabLabel": "Roles",
+          "roles": "Roles",
+          "role": "Role",
+          "errorTitle": "Oops! There was an error",
+          "errorMessage": "Unfortunately, an error occurred while retrieving the user roles.",
+          "rolesHeadline": "Roles",
+          "filter": {
+            "status": "Status",
+            "marketRole": "Market role"
+          },
+          "table": {
+            "columns": {
+              "name": "Name",
+              "description": "Description",
+              "marketrole": "Market role",
+              "status": "Status"
+            }
+          },
+          "userRolesHeadline": {
+            "singular": "{{ userRolesCount }} role",
+            "plural": "{{ userRolesCount }} roles"
+          }
         },
         "permissions": {
           "tabLabel": "Permissions"
+        },
+        "errors": {
+          "generalError": {
+            "title": "Oops! There was an error",
+            "message": "Unfortunately, an error occurred while retrieving the necessary information.",
+            "button": "Try again"
+          }
         }
       }
     }

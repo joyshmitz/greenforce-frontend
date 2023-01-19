@@ -15,8 +15,12 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Observable, switchMap, tap, withLatestFrom } from 'rxjs';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import { Observable, of, switchMap, tap } from 'rxjs';
+import {
+  ComponentStore,
+  OnStoreInit,
+  tapResponse,
+} from '@ngrx/component-store';
 
 import {
   ErrorState,
@@ -26,87 +30,119 @@ import {
   MarketParticipantUserOverviewHttp,
   UserOverviewItemDto,
   UserOverviewResultDto,
+  UserStatus,
 } from '@energinet-datahub/dh/shared/domain';
 
 interface DhUserManagementState {
   readonly users: UserOverviewItemDto[];
   readonly totalUserCount: number;
-  readonly requestState: LoadingState | ErrorState;
+  readonly usersRequestState: LoadingState | ErrorState;
   readonly pageNumber: number;
   readonly pageSize: number;
+  readonly searchText: string | undefined;
+  readonly statusFilter: UserStatus[];
 }
+
+export type FetchUsersParams = Pick<
+  DhUserManagementState,
+  'pageSize' | 'pageNumber' | 'searchText' | 'statusFilter'
+>;
 
 const initialState: DhUserManagementState = {
   users: [],
   totalUserCount: 0,
-  requestState: LoadingState.INIT,
+  usersRequestState: LoadingState.INIT,
   pageNumber: 1,
   pageSize: 50,
+  searchText: undefined,
+  statusFilter: ['Active'],
 };
 
 @Injectable()
-export class DhAdminUserManagementDataAccessApiStore extends ComponentStore<DhUserManagementState> {
-  isInit$ = this.select((state) => state.requestState === LoadingState.INIT);
-  isLoading$ = this.select(
-    (state) => state.requestState === LoadingState.LOADING
+export class DhAdminUserManagementDataAccessApiStore
+  extends ComponentStore<DhUserManagementState>
+  implements OnStoreInit
+{
+  readonly isInit$ = this.select(
+    (state) => state.usersRequestState === LoadingState.INIT
   );
-  hasGeneralError$ = this.select(
-    (state) => state.requestState === ErrorState.GENERAL_ERROR
+  readonly isLoading$ = this.select(
+    (state) => state.usersRequestState === LoadingState.LOADING
+  );
+  readonly hasGeneralError$ = this.select(
+    (state) => state.usersRequestState === ErrorState.GENERAL_ERROR
   );
 
-  users$ = this.select((state) => state.users);
-  totalUserCount$ = this.select((state) => state.totalUserCount);
+  readonly initialStatusFilter$ = this.select((state) => state.statusFilter);
+
+  readonly users$ = this.select((state) => state.users);
+  readonly totalUserCount$ = this.select((state) => state.totalUserCount);
 
   // 1 needs to be substracted here because our endpoint's `pageNumber` param starts at `1`
   // whereas the paginator's `pageIndex` property starts at `0`
-  paginatorPageIndex$ = this.select((state) => state.pageNumber - 1);
-  pageSize$ = this.select((state) => state.pageSize);
+  readonly paginatorPageIndex$ = this.select((state) => state.pageNumber - 1);
+  readonly pageSize$ = this.select((state) => state.pageSize);
+
+  private readonly fetchUsersParams$: Observable<FetchUsersParams> =
+    this.select(
+      this.pageSize$,
+      this.select((state) => state.pageNumber),
+      this.select((state) => state.searchText),
+      this.select((state) => state.statusFilter),
+      (pageSize, pageNumber, searchText, statusFilter) => ({
+        pageSize,
+        pageNumber,
+        searchText,
+        statusFilter,
+      }),
+      { debounce: true }
+    );
 
   constructor(private httpClient: MarketParticipantUserOverviewHttp) {
     super(initialState);
   }
 
-  readonly getUsers = this.effect((trigger$: Observable<void>) =>
-    trigger$.pipe(
-      withLatestFrom(this.state$),
-      tap(() => {
-        this.setLoading(LoadingState.LOADING);
-      }),
-      switchMap(([, state]) =>
-        this.httpClient
-          .v1MarketParticipantUserOverviewGetUserOverviewGet(
-            state.pageNumber,
-            state.pageSize
-          )
-          .pipe(
+  private readonly loadUsers = this.effect(
+    (fetchUsersParams$: Observable<FetchUsersParams>) =>
+      fetchUsersParams$.pipe(
+        tap(() => {
+          this.patchState({
+            usersRequestState: LoadingState.LOADING,
+            users: [],
+          });
+        }),
+        switchMap((fetchUsersParams) =>
+          this.getUsers(fetchUsersParams).pipe(
             tapResponse(
               (response) => {
-                this.setLoading(LoadingState.LOADED);
+                this.patchState({ usersRequestState: LoadingState.LOADED });
 
                 this.updateUsers(response);
               },
               () => {
-                this.setLoading(LoadingState.LOADED);
+                this.updateUsers({ users: [], totalUserCount: 0 });
 
-                this.handleError();
+                this.patchState({
+                  usersRequestState: ErrorState.GENERAL_ERROR,
+                });
               }
             )
           )
+        )
       )
-    )
   );
 
-  readonly updatePageMetadata = this.effect(
-    (trigger$: Observable<{ pageIndex: number; pageSize: number }>) =>
-      trigger$.pipe(
-        tap(({ pageIndex, pageSize }) => {
-          // 1 needs to be added here because the paginator's `pageIndex` property starts at `0`
-          // whereas our endpoint's `pageNumber` param starts at `1`
-          this.patchState({ pageNumber: pageIndex + 1, pageSize });
-
-          this.getUsers();
-        })
-      )
+  readonly updatePageMetadata = this.updater(
+    (
+      state: DhUserManagementState,
+      pageMetadata: { pageIndex: number; pageSize: number }
+    ): DhUserManagementState => ({
+      ...state,
+      pageSize: pageMetadata.pageSize,
+      // 1 needs to be added here because the paginator's `pageIndex` property starts at `0`
+      // whereas our endpoint's `pageNumber` param starts at `1`
+      pageNumber: pageMetadata.pageIndex + 1,
+    })
   );
 
   private updateUsers = this.updater(
@@ -120,22 +156,39 @@ export class DhAdminUserManagementDataAccessApiStore extends ComponentStore<DhUs
     })
   );
 
-  private setLoading = this.updater(
-    (state, loadingState: LoadingState): DhUserManagementState => ({
-      ...state,
-      requestState: loadingState,
-    })
-  );
+  private getUsers({
+    pageNumber,
+    pageSize,
+    searchText,
+    statusFilter,
+  }: FetchUsersParams) {
+    if (!statusFilter || statusFilter.length == 0) {
+      return of({ users: [], totalUserCount: 0 });
+    }
 
-  private handleError = () => {
-    this.updateUsers({ users: [], totalUserCount: 0 });
+    return this.httpClient.v1MarketParticipantUserOverviewGetUserOverviewGet(
+      pageNumber,
+      pageSize,
+      searchText,
+      statusFilter
+    );
+  }
 
-    this.patchState({ requestState: ErrorState.GENERAL_ERROR });
+  updateSearchText(searchText: string) {
+    const searchTextToSave = searchText === '' ? undefined : searchText;
+
+    this.patchState({ searchText: searchTextToSave });
+  }
+
+  updateStatusFilter(userStatus: UserStatus[]) {
+    this.patchState({ statusFilter: userStatus });
+  }
+
+  readonly reloadUsers = () => {
+    this.loadUsers(this.fetchUsersParams$);
   };
 
-  private resetState = () => this.setState(initialState);
-
-  ngrxOnStoreInit(): void {
-    this.getUsers();
+  ngrxOnStoreInit() {
+    this.loadUsers(this.fetchUsersParams$);
   }
 }

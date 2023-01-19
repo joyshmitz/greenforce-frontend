@@ -15,29 +15,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <ng-container *transloco="let t; read: 'admin.userManagement.tabs.users'">
+  <div class="filter-container">
+    <dh-users-tab-search (search)="onSearch($event)"></dh-users-tab-search>
+    <dh-users-tab-status-filter
+      [initialValue]="initialStatusFilter$ | push"
+      (changed)="onStatusChanged($event)"
+    ></dh-users-tab-status-filter>
+  </div>
+
   <watt-card>
     <watt-card-title>
-      <div class="card-title-container">
+      <div class="card-title__container">
         <ng-container
           *ngTemplateOutlet="
             usersHeadline;
             context: {
-              $implicit: totalUserCount
+              $implicit: totalUserCount$ | push
             }
           "
         ></ng-container>
 
         <dh-shared-ui-paginator
-          [length]="totalUserCount"
-          (changed)="pageChange.emit($event)"
-          [pageSize]="pageSize"
-          [pageIndex]="pageIndex"
+          [length]="totalUserCount$ | push"
+          [pageSize]="pageSize$ | push"
+          [pageIndex]="pageIndex$ | push"
+          (changed)="onPageChange($event)"
         >
         </dh-shared-ui-paginator>
       </div>
     </watt-card-title>
 
-    <dh-users-tab-table></dh-users-tab-table>
+    <ng-container *rxLet="isLoading$ as isLoading">
+      <dh-users-tab-table [users]="users$ | push"></dh-users-tab-table>
+
+      <div *ngIf="isLoading" class="users-overview__spinner">
+        <watt-spinner></watt-spinner>
+      </div>
+    </ng-container>
+
+    <ng-container *rxLet="hasGeneralError$ as hasGeneralError">
+      <div *ngIf="hasGeneralError" class="users-overview__error">
+        <dh-users-tab-general-error
+          (reload)="reloadUsers()"
+        ></dh-users-tab-general-error>
+      </div>
+    </ng-container>
   </watt-card>
 </ng-container>
 
@@ -49,7 +71,7 @@ limitations under the License.
       {{ t("singular", { usersCount: usersCount }) }}
     </h4>
 
-    <h4 *ngIf="usersCount === 0 || usersCount > 0">
+    <h4 *ngIf="usersCount !== 1">
       {{ t("plural", { usersCount: usersCount }) }}
     </h4>
   </ng-container>
