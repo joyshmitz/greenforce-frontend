@@ -26,6 +26,7 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "options": {
+        "docsMode": true,
         "port": 4400,
         "host": "0.0.0.0",
         "configDir": "libs/ui-watt/.storybook",

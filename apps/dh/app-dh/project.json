@@ -6,10 +6,13 @@
   "prefix": "dh",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-builders/custom-webpack:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/dh/app-dh",
+        "customWebpackConfig": {
+          "path": "apps/dh/app-dh/webpack.config.ts"
+        },
         "index": "apps/dh/app-dh/src/index.html",
         "main": "apps/dh/app-dh/src/main.ts",
         "polyfills": "zone.js",
@@ -140,7 +143,10 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "browserTarget": "app-dh:build"
+      },
       "configurations": {
         "production": {
           "browserTarget": "app-dh:build:production",

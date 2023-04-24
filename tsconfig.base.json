@@ -323,6 +323,9 @@
       "@energinet-datahub/watt/button": [
         "libs/ui-watt/src/lib/components/button/index.ts"
       ],
+      "@energinet-datahub/watt/button.svelte": [
+        "libs/ui-watt/src/lib/components/button/watt-button.svelte"
+      ],
       "@energinet-datahub/watt/card": [
         "libs/ui-watt/src/lib/components/card/index.ts"
       ],

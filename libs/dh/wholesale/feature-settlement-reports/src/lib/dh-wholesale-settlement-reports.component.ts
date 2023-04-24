@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit } from '@angular/core';
 import { PushModule } from '@rx-angular/template/push';
 import { LetModule } from '@rx-angular/template/let';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -42,6 +42,7 @@ import {
 } from '@energinet-datahub/dh/shared/domain';
 import sub from 'date-fns/sub';
 import { SettlementReport } from '@energinet-datahub/dh/wholesale/domain';
+import '@energinet-datahub/watt/button.svelte';
 
 @Component({
   selector: 'dh-wholesale-settlement-reports',
@@ -59,6 +60,7 @@ import { SettlementReport } from '@energinet-datahub/dh/wholesale/domain';
     WattTopBarComponent,
     WattCardModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './dh-wholesale-settlement-reports.component.html',
   styleUrls: ['./dh-wholesale-settlement-reports.component.scss'],
 })
