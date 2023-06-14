@@ -126,8 +126,8 @@ watt-table .mat-table {
 }
 
 .watt-table-toolbar {
-  position: absolute;
-  bottom: var(--watt-space-m);
+  position: fixed;
+  bottom: var(--watt-space-l);
   left: 50%;
   transform: translateX(-50%);
   display: flex;

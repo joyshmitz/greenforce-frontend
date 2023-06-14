@@ -78,10 +78,6 @@ limitations under the License.
       'watt-table-active-row': _isActiveRow(row)
     }"
   ></tr>
-
-  <ng-container *ngIf="_toolbar">
-    <tr mat-footer-row *matFooterRowDef="['spacer']"></tr>
-  </ng-container>
 </table>
 
 <div *ngIf="_toolbar" class="watt-table-toolbar" role="toolbar">
