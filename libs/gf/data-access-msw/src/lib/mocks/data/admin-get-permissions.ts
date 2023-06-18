@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { onUnhandledRequest } from '@energinet-datahub/gf/data-access-msw';
+import { graphql } from '@energinet-datahub/dh/shared/domain';
 
-import { server } from './server';
-
-export function setupMSW() {
-  beforeAll(() => {
-    // Enable the mocking in tests.
-    server.listen({ onUnhandledRequest });
-  });
-
-  afterEach(() => {
-    // Reset any runtime handlers tests may use.
-    server.resetHandlers();
-  });
-
-  afterAll(() => {
-    // Clean up once the tests are done.
-    server.close();
-  });
-}
+export const adminPermissionsMock: graphql.GetPermissionsQuery = {
+  permissions: [
+    {
+      id: 1,
+      name: 'organizations:view',
+      description: 'Description for OrganizationView',
+      created: '2023-03-07T00:00:00+00:00',
+    },
+    {
+      id: 2,
+      name: 'organizations:manage',
+      description: 'Description for OrganizationManage',
+      created: '2023-03-07T00:00:00+00:00',
+    },
+  ],
+};

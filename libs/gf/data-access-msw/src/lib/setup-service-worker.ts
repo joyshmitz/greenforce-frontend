@@ -14,23 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { onUnhandledRequest } from '@energinet-datahub/gf/data-access-msw';
+import { setupWorker } from 'msw';
+import { handlers, onUnhandledRequest } from './handlers';
 
-import { server } from './server';
-
-export function setupMSW() {
-  beforeAll(() => {
-    // Enable the mocking in tests.
-    server.listen({ onUnhandledRequest });
-  });
-
-  afterEach(() => {
-    // Reset any runtime handlers tests may use.
-    server.resetHandlers();
-  });
-
-  afterAll(() => {
-    // Clean up once the tests are done.
-    server.close();
-  });
+export function setupServiceWorker(apiBase: string) {
+  try {
+    const worker = setupWorker(...handlers(apiBase));
+    worker.start({ onUnhandledRequest });
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
 }

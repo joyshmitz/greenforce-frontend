@@ -24,7 +24,7 @@ import { dhLocalApiEnvironment } from '@energinet-datahub/dh/shared/assets';
  * Mock Service Worker
  */
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { setupServiceWorker } from '@energinet-datahub/dh/shared/data-access-msw';
+import { setupServiceWorker } from '@energinet-datahub/gf/data-access-msw';
 setupServiceWorker(dhLocalApiEnvironment.apiBase);
 
 /*

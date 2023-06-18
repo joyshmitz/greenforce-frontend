@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { onUnhandledRequest } from '@energinet-datahub/gf/data-access-msw';
+import { onUnhandledRequest } from '@energinet-datahub/dh/shared/data-access-msw';
 
 import { server } from './server';
 

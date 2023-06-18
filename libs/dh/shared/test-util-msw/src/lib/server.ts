@@ -16,7 +16,7 @@
  */
 import { setupServer } from 'msw/node';
 
-import { handlers } from '@energinet-datahub/dh/shared/data-access-msw';
+import { handlers } from '@energinet-datahub/gf/data-access-msw';
 import { dhLocalApiEnvironment } from '@energinet-datahub/dh/shared/assets';
 
 // Setup requests interception using the given handlers.

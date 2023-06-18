@@ -1,0 +1,27 @@
+{
+  "name": "gf-data-access-msw",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/gf/data-access-msw/src",
+  "prefix": "gf",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/gf/data-access-msw"],
+      "options": {
+        "jestConfig": "libs/gf/data-access-msw/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/gf/data-access-msw/src/**/*.ts",
+          "libs/gf/data-access-msw/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": ["product:gf", "scope:shared", "type:data-access"]
+}

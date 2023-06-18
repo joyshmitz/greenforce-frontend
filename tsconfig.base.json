@@ -169,8 +169,8 @@
       "@energinet-datahub/dh/shared/data-access-graphql": [
         "libs/dh/shared/data-access-graphql/src/index.ts"
       ],
-      "@energinet-datahub/dh/shared/data-access-msw": [
-        "libs/dh/shared/data-access-msw/src/index.ts"
+      "@energinet-datahub/gf/data-access-msw": [
+        "libs/gf/data-access-msw/src/index.ts"
       ],
       "@energinet-datahub/dh/shared/domain": [
         "libs/dh/shared/domain/src/index.ts"
@@ -199,8 +199,8 @@
       "@energinet-datahub/dh/shared/test-util-metering-point": [
         "libs/dh/shared/test-util-metering-point/src/index.ts"
       ],
-      "@energinet-datahub/dh/shared/test-util-msw": [
-        "libs/dh/shared/test-util-msw/src/index.ts"
+      "@energinet-datahub/gf/test-util-msw": [
+        "libs/gf/test-util-msw/src/index.ts"
       ],
       "@energinet-datahub/dh/shared/ui-paginator": [
         "libs/dh/shared/ui-paginator/src/index.ts"

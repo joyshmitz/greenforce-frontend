@@ -14,23 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { onUnhandledRequest } from '@energinet-datahub/gf/data-access-msw';
+import { rest } from 'msw';
 
-import { server } from './server';
+import marketParticipantUserActors from './data/marketParticipantUserActors.json';
 
-export function setupMSW() {
-  beforeAll(() => {
-    // Enable the mocking in tests.
-    server.listen({ onUnhandledRequest });
-  });
+export function marketParticipantUserMocks(apiBase: string) {
+  return [getActors(apiBase)];
+}
 
-  afterEach(() => {
-    // Reset any runtime handlers tests may use.
-    server.resetHandlers();
-  });
-
-  afterAll(() => {
-    // Clean up once the tests are done.
-    server.close();
+function getActors(apiBase: string) {
+  return rest.get(`${apiBase}/v1/MarketParticipantUser/GetUserActors`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(marketParticipantUserActors));
   });
 }
