@@ -61,6 +61,12 @@ export const dhCoreShellRoutes: Routes = [
       {
         path: WHOLESALE_BASE_PATH,
         loadChildren: () =>
+          import('@energinet-datahub/dh/calculations/shell/routes').then((esModule) => esModule),
+        canActivate: [MsalGuard],
+      },
+      {
+        path: WHOLESALE_BASE_PATH,
+        loadChildren: () =>
           import('@energinet-datahub/dh/wholesale/shell').then(
             (esModule) => esModule.dhWholesaleShellRoutes
           ),

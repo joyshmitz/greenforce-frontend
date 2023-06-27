@@ -1,0 +1,8 @@
+{
+  "name": "dh-calculations-shell",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/dh/calculations/shell",
+  "prefix": "dh",
+  "tags": ["product:dh", "domain:calculations", "type:shell"],
+  "projectType": "library"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "dh-calculations-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/dh/calculations/feature",
+  "prefix": "dh",
+  "tags": ["product:dh", "domain:calculations", "type:feature"],
+  "projectType": "library"
+}
