@@ -1,8 +1,27 @@
 {
-  "name": "dh-calculations-feature",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/dh/calculations/feature",
+  "name": "dh-calculations-feature",
   "prefix": "dh",
+  "projectType": "library",
+  "sourceRoot": "libs/dh/calculations/feature",
   "tags": ["product:dh", "domain:calculations", "type:feature"],
-  "projectType": "library"
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/dh/calculations/feature"],
+      "options": {
+        "jestConfig": "libs/dh/calculations/feature/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/dh/calculations/feature/**/*.ts",
+          "libs/dh/calculations/feature/**/*.html"
+        ]
+      }
+    }
+  }
 }

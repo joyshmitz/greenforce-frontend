@@ -1,0 +1,8 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "dh-shared-test-util-jest",
+  "prefix": "dh",
+  "projectType": "library",
+  "sourceRoot": "libs/dh/shared/test-util-jest",
+  "tags": ["product:dh", "domain:shared", "type:test-util"]
+}
