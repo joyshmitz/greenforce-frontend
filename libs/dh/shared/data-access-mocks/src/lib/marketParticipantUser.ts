@@ -14,22 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 
 import { marketParticipantUserActors } from './data/marketParticipantUserActors';
+
+const delayMs = 300;
 
 export function marketParticipantUserMocks(apiBase: string) {
   return [getActors(apiBase), postInitiateMitIdSignup(apiBase)];
 }
 
 function getActors(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUser/GetUserActors`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(marketParticipantUserActors));
+  return http.get(`${apiBase}/v1/MarketParticipantUser/GetUserActors`, async () => {
+    return HttpResponse.json(marketParticipantUserActors, { status: 200 });
   });
 }
 
 function postInitiateMitIdSignup(apiBase: string) {
-  return rest.post(`${apiBase}/v1/MarketParticipantUser/InitiateMitIdSignup`, (req, res, ctx) => {
-    return res(ctx.delay(300), ctx.status(200));
+  return http.post(`${apiBase}/v1/MarketParticipantUser/InitiateMitIdSignup`, async () => {
+    await delay(delayMs);
+
+    return new HttpResponse(null, { status: 200 });
   });
 }

@@ -34,7 +34,7 @@ import {
 } from '@energinet-datahub/dh/shared/domain';
 import { WattToastService } from '@energinet-datahub/watt/toast';
 
-import { DhUsersTabComponent } from './dh-users-tab.component';
+import { debounceTimeInMs, DhUsersTabComponent } from './dh-users-tab.component';
 
 const users: MarketParticipantUserOverviewItemDto[] = [
   {
@@ -128,12 +128,12 @@ describe(DhUsersTabComponent, () => {
     const searchInput = screen.getByRole('searchbox');
 
     userEvent.type(searchInput, inputValue);
-    tick(250);
+    tick(debounceTimeInMs);
 
     expect(store.updateSearchText).toHaveBeenCalledWith(inputValue);
   }));
 
-  it('forwards status filter value to store', async () => {
+  it('forwards status filter value to store', fakeAsync(async () => {
     const { store, matSelect, statusFilterBtn } = await setup();
 
     userEvent.click(statusFilterBtn);
@@ -147,7 +147,9 @@ describe(DhUsersTabComponent, () => {
       await option.click();
     }
 
+    tick(debounceTimeInMs);
+
     const allOptions = Object.keys(MarketParticipantUserStatus);
     expect(store.updateStatusFilter).toHaveBeenCalledWith(allOptions);
-  });
+  }));
 });

@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { DhActorTokenService } from './dh-actor-token.service';
 import { HttpHandler, HttpRequest, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { firstValueFrom, of } from 'rxjs';
 
 import { MarketParticipantUserHttp, TokenHttp } from '@energinet-datahub/dh/shared/domain';
 import { LocalStorageFake, SessionStorageFake } from '@energinet-datahub/gf/test-util';
 
+import { DhActorTokenService } from './dh-actor-token.service';
 import { DhActorStorage } from './dh-actor-storage';
 
 describe(DhActorTokenService, () => {

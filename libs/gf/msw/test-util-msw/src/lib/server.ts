@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mocks, onUnhandledRequest, handlers } from '@energinet-datahub/gf/util-msw';
 import { setupServer } from 'msw/node';
+
+import { mocks, onUnhandledRequest, handlers } from '@energinet-datahub/gf/util-msw';
 
 export function setupMSWServer(apiBase: string, mocks: mocks) {
   const server = setupServer(...handlers(apiBase, mocks));

@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
+
 import { aggregateTransfersResponse } from './data/aggregate-transfers';
 
 export function aggregateTransfersMocks(apiBase: string) {
@@ -22,10 +23,9 @@ export function aggregateTransfersMocks(apiBase: string) {
 }
 
 function getAggregateTransfers(apiBase: string) {
-  return rest.get(
-    `${apiBase}/v1/aggregate-transfers`.replace('/api', '/wallet-api'),
-    (req, res, ctx) => {
-      return res(ctx.status(200), ctx.json(aggregateTransfersResponse), ctx.delay(1000));
-    }
-  );
+  return http.get(`${apiBase}/v1/aggregate-transfers`.replace('/api', '/wallet-api'), async () => {
+    await delay(1000);
+
+    return HttpResponse.json(aggregateTransfersResponse);
+  });
 }

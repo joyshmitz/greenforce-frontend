@@ -14,23 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 
 import marketParticipantUserRoleView from './data/marketParticipantUserRoleView.json';
 import marketParticipantUserRolePermissions from './data/marketParticipantUserRolePermissions.json';
+
+const delayMs = 300;
 
 export function marketParticipantUserRoleMocks(apiBase: string) {
   return [GetUserRoleView(apiBase), Permissions(apiBase)];
 }
 
 function GetUserRoleView(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUserRole/GetUserRoleView`, (req, res, ctx) => {
-    return res(ctx.json(marketParticipantUserRoleView));
+  return http.get(`${apiBase}/v1/MarketParticipantUserRole/GetUserRoleView`, async () => {
+    await delay(delayMs);
+
+    return HttpResponse.json(marketParticipantUserRoleView);
   });
 }
 
 function Permissions(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUserRole/Permissions`, (req, res, ctx) => {
-    return res(ctx.json(marketParticipantUserRolePermissions));
+  return http.get(`${apiBase}/v1/MarketParticipantUserRole/Permissions`, async () => {
+    await delay(delayMs);
+
+    return HttpResponse.json(marketParticipantUserRolePermissions);
   });
 }

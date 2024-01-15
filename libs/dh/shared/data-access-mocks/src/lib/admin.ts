@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 
 import {
   mockGetGridAreasForCreateActorQuery,
@@ -40,6 +40,8 @@ import { marketParticipantUserSearchUsers } from './data/marketParticipantUserSe
 import { getUserRolesByEicfunction } from './data/get-user-roles-by-eicfunction';
 import { marketParticipantOrganizationGetFilteredActors } from './data/marketParticipantOrganizationGetFilteredActors';
 import { getGridAreasForCreateActorMock } from './data/get-grid-areas-for-actor-create';
+
+const delayMs = 300;
 
 export function adminMocks(apiBase: string) {
   return [
@@ -67,150 +69,182 @@ export function adminMocks(apiBase: string) {
 }
 
 function getMarketParticipantUserSearchUsers(apiBase: string) {
-  return rest.post(`${apiBase}/v1/MarketParticipantUserOverview/SearchUsers`, (req, res, ctx) => {
-    return res(ctx.delay(300), ctx.json(marketParticipantUserSearchUsers));
+  return http.post(`${apiBase}/v1/MarketParticipantUserOverview/SearchUsers`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantUserSearchUsers);
   });
 }
 
 function getMarketParticipantActorQuerySelectionActors(apiBase: string) {
-  return rest.get(
-    `${apiBase}/v1/MarketParticipantActorQuery/GetSelectionActors`,
-    (req, res, ctx) => {
-      return res(ctx.json(marketParticipantActorQuerySelectionActors));
-    }
-  );
+  return http.get(`${apiBase}/v1/MarketParticipantActorQuery/GetSelectionActors`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantActorQuerySelectionActors);
+  });
 }
 
 function getMarketParticipantUserRoleGetAssignable(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUserRole/GetAssignable`, (req, res, ctx) => {
-    return res(ctx.json(marketParticipantUserRoles));
+  return http.get(`${apiBase}/v1/MarketParticipantUserRole/GetAssignable`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantUserRoles);
   });
 }
 
 function getActorOrganization(apiBase: string) {
-  return rest.get(
-    `${apiBase}/v1/MarketParticipant/Organization/GetActorOrganization`,
-    (req, res, ctx) => {
-      return res(ctx.json(marketParticipantOrganization));
-    }
-  );
+  return http.get(`${apiBase}/v1/MarketParticipant/Organization/GetActorOrganization`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantOrganization);
+  });
 }
 
 function getMarketParticipantUserRoleGetAll(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUserRole/GetAll`, (req, res, ctx) => {
-    return res(ctx.delay(300), ctx.json(marketParticipantUserRoleGetAll));
+  return http.get(`${apiBase}/v1/MarketParticipantUserRole/GetAll`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantUserRoleGetAll);
   });
 }
 
 function getMarketParticipantUserGetUserAuditLogs(apiBase: string) {
-  return rest.get(`${apiBase}/v1/MarketParticipantUser/GetUserAuditLogs`, (req, res, ctx) => {
-    return res(ctx.json(marketParticipantUserGetUserAuditLogs));
+  return http.get(`${apiBase}/v1/MarketParticipantUser/GetUserAuditLogs`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantUserGetUserAuditLogs);
   });
 }
 
 function getMarketParticipantUserRoleGetUserRoleWithPermissions(apiBase: string) {
-  return rest.get(
+  return http.get(
     `${apiBase}/v1/MarketParticipantUserRole/GetUserRoleWithPermissions`,
-    (req, res, ctx) => {
-      const userRoleId = req.url.searchParams.get('userRoleId');
+    async ({ request }) => {
+      const url = new URL(request.url);
+      const userRoleId = url.searchParams.get('userRoleId');
 
       const userRole = marketParticipantUserRoleGetUserRoleWithPermissions.find(
         (userRole) => userRole.id === userRoleId
       );
 
-      return res(ctx.json(userRole));
+      await delay(300);
+
+      return HttpResponse.json(userRole);
     }
   );
 }
 
 function getUserRoleAuditLogs() {
-  return mockGetUserRoleAuditLogsQuery((req, res, ctx) => {
-    return res(ctx.data(getUserRoleAuditLogsMock));
+  return mockGetUserRoleAuditLogsQuery(async () => {
+    await delay(300);
+
+    return HttpResponse.json({ data: getUserRoleAuditLogsMock });
   });
 }
 
 function putMarketParticipantUserRoleUpdate(apiBase: string) {
-  return rest.put(`${apiBase}/v1/MarketParticipantUserRole/Update`, (req, res, ctx) => {
-    return res(ctx.status(200));
+  return http.put(`${apiBase}/v1/MarketParticipantUserRole/Update`, async () => {
+    await delay(300);
+
+    return new HttpResponse(null, { status: 200 });
   });
 }
 
 function getMarketParticipantOrganizationGetFilteredActors(apiBase: string) {
-  return rest.get(
-    `${apiBase}/v1/MarketParticipant/Organization/GetFilteredActors`,
-    (req, res, ctx) => {
-      return res(ctx.json(marketParticipantOrganizationGetFilteredActors));
-    }
-  );
+  return http.get(`${apiBase}/v1/MarketParticipant/Organization/GetFilteredActors`, async () => {
+    await delay(300);
+
+    return HttpResponse.json(marketParticipantOrganizationGetFilteredActors);
+  });
 }
 
 function getAdminPermissions() {
-  return mockGetPermissionsQuery((req, res, ctx) => {
-    return res(ctx.delay(300), ctx.data(adminPermissionsMock));
+  return mockGetPermissionsQuery(async () => {
+    await delay(300);
+
+    return HttpResponse.json({ data: adminPermissionsMock });
   });
 }
 
 function getAdminPermissionDetails() {
-  return mockGetPermissionDetailsQuery((req, res, ctx) => {
-    return res(ctx.delay(300), ctx.data(adminPermissionDetailsMock));
+  return mockGetPermissionDetailsQuery(async () => {
+    await delay(300);
+
+    return HttpResponse.json({ data: adminPermissionDetailsMock });
   });
 }
 
 function getAdminPermissionLogs() {
-  return mockGetPermissionAuditLogsQuery((req, res, ctx) => {
-    const permId = req.variables.id;
+  return mockGetPermissionAuditLogsQuery(async ({ variables }) => {
+    const permId = variables.id;
     const permissionAuditLogs = [adminPermissionAuditLogsMock[permId]];
-    return res(ctx.delay(300), ctx.data({ __typename: 'Query', permissionAuditLogs }));
+
+    await delay(300);
+
+    return HttpResponse.json({ data: { __typename: 'Query', permissionAuditLogs } });
   });
 }
 
 function putMarketParticipantPermissionsUpdate(apiBase: string) {
-  return rest.put(`${apiBase}/v1/MarketParticipantPermissions/Update`, (req, res, ctx) => {
-    return res(ctx.status(200));
+  return http.put(`${apiBase}/v1/MarketParticipantPermissions/Update`, async () => {
+    await delay(300);
+
+    return new HttpResponse(null, { status: 200 });
   });
 }
 
 function postMarketParticipantUserRoleCreate(apiBase: string) {
-  return rest.post(`${apiBase}/v1/MarketParticipantUserRole/Create`, (req, res, ctx) => {
-    return res(ctx.delay(300), ctx.status(200), ctx.text(''));
+  return http.post(`${apiBase}/v1/MarketParticipantUserRole/Create`, async () => {
+    await delay(300);
+
+    return HttpResponse.text('');
   });
 }
 
 function putMarketParticipantUserUpdateUserIdentity(apiBase: string) {
-  return rest.put(`${apiBase}/v1/MarketParticipantUser/UpdateUserIdentity`, (req, res, ctx) => {
-    return res(ctx.delay(300), ctx.status(200));
+  return http.put(`${apiBase}/v1/MarketParticipantUser/UpdateUserIdentity`, async () => {
+    await delay(300);
+
+    return new HttpResponse(null, { status: 200 });
   });
 }
 
 function putMarketParticipantUserRoleAssignmentUpdateAssignments(apiBase: string) {
-  return rest.put(
+  return http.put(
     `${apiBase}/v1/MarketParticipantUserRoleAssignment/UpdateAssignments`,
-    (req, res, ctx) => {
-      return res(ctx.delay(300), ctx.status(200));
+    async () => {
+      await delay(300);
+
+      return new HttpResponse(null, { status: 200 });
     }
   );
 }
 
 function getUserRolesByEicfunctionQuery() {
-  return mockGetUserRolesByEicfunctionQuery((req, res, ctx) => {
-    return res(ctx.delay(300), ctx.data(getUserRolesByEicfunction));
+  return mockGetUserRolesByEicfunctionQuery(async () => {
+    await delay(300);
+
+    return HttpResponse.json({ data: getUserRolesByEicfunction });
   });
 }
 
 function getKnownEmailsQuery() {
-  return mockGetKnownEmailsQuery((req, res, ctx) => {
-    return res(
-      ctx.delay(300),
-      ctx.data({
+  return mockGetKnownEmailsQuery(async () => {
+    await delay(300);
+
+    return HttpResponse.json({
+      data: {
         __typename: 'Query',
         knownEmails: marketParticipantUserSearchUsers.users.map((x) => x.email),
-      })
-    );
+      },
+    });
   });
 }
 
 function getGridAreasForCreateActor() {
-  return mockGetGridAreasForCreateActorQuery((req, res, ctx) => {
-    return res(ctx.data(getGridAreasForCreateActorMock));
+  return mockGetGridAreasForCreateActorQuery(async () => {
+    await delay(delayMs);
+
+    return HttpResponse.json({ data: getGridAreasForCreateActorMock });
   });
 }
