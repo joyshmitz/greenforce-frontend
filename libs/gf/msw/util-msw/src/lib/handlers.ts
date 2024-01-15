@@ -19,7 +19,10 @@ import { GraphQLHandler, RequestHandler, HttpHandler } from 'msw';
 export type mocks = ((apiBase: string) => (HttpHandler | GraphQLHandler)[])[];
 
 export function handlers(apiBase: string, mocks: mocks): RequestHandler[] {
-  return mocks.map((mock) => mock(apiBase)).flat();
+  return mocks.reduce(
+    (acc: (HttpHandler | GraphQLHandler)[], mock) => acc.concat(mock(apiBase)),
+    []
+  );
 }
 
 export function onUnhandledRequest(req: Request) {
