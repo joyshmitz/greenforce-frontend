@@ -18,6 +18,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EoAuthService, EoAuthStore } from '@energinet-datahub/eo/shared/services';
 import { WattSpinnerComponent } from '@energinet-datahub/watt/spinner';
+import { TranslocoService } from '@ngneat/transloco';
 import { combineLatest, take } from 'rxjs';
 
 @Component({
@@ -41,6 +42,8 @@ export class EoLoginComponent {
   private store = inject(EoAuthStore);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private transloco = inject(TranslocoService);
+
   constructor() {
     this.service.handleLogin();
     combineLatest([this.store.getScope$, this.store.isTokenExpired$])
@@ -49,9 +52,8 @@ export class EoLoginComponent {
         const redirectionPath = this.route.snapshot.queryParamMap.get('redirectionPath');
 
         if (scope.length == 0) {
-          redirectionPath
-            ? this.service.startLogin()
-            : this.router.navigate(['/'], { queryParamsHandling: 'preserve' });
+          window.location.assign(window.location.origin + '/' + this.transloco.getActiveLang());
+          window.location.reload();
           return;
         }
 
@@ -66,12 +68,17 @@ export class EoLoginComponent {
         }
 
         if (scope.includes('dashboard')) {
-          const path = redirectionPath ? redirectionPath : '/dashboard';
-          window.location.href = window.location.origin + path;
+          const path = redirectionPath
+            ? redirectionPath
+            : `/${this.transloco.getActiveLang()}/dashboard`;
+          this.router.navigate([path]);
+
           return;
         }
 
-        this.router.navigate(['/'], { queryParamsHandling: 'preserve' });
+        this.router.navigate(['/', this.transloco.getActiveLang()], {
+          queryParamsHandling: 'preserve',
+        });
       });
   }
 }

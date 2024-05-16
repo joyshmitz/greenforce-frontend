@@ -14,5 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './lib/eo-landing-page-shell.routes';
-export * from './lib/shell.component';
+@use "@energinet-datahub/watt";
+
+/* You can add global styles to this file, and also import other style files */
+body {
+  background: #000;
+}
+
+// Resets
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+p,
+pre,
+dl,
+dd,
+ol,
+ul,
+figure,
+hr,
+fieldset,
+legend {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}

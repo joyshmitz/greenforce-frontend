@@ -14,5 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './lib/eo-landing-page-shell.routes';
-export * from './lib/shell.component';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  standalone: true,
+  imports: [RouterModule],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+})
+export class AppComponent {}

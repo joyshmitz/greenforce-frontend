@@ -14,5 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './lib/eo-landing-page-shell.routes';
-export * from './lib/shell.component';
+// @ts-expect-error https://thymikee.github.io/jest-preset-angular/docs/getting-started/test-environment
+globalThis.ngJest = {
+  testEnvironmentOptions: {
+    errorOnUnknownElements: true,
+    errorOnUnknownProperties: true,
+  },
+};
+import 'jest-preset-angular/setup-jest';

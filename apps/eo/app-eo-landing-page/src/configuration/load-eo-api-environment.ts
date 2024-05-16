@@ -14,5 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './lib/eo-landing-page-shell.routes';
-export * from './lib/shell.component';
+import {
+  environment,
+  EoApiEnvironment,
+  loadEoApiEnvironment as _loadEoApiEnvironment,
+} from '@energinet-datahub/eo/shared/environments';
+
+export function loadEoApiEnvironment(): Promise<EoApiEnvironment> {
+  const configurationFilename = environment.production
+    ? 'eo-api-environment.json'
+    : 'eo-api-environment.local.json';
+
+  return _loadEoApiEnvironment(configurationFilename);
+}

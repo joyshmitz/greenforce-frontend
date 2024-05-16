@@ -14,5 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './lib/eo-landing-page-shell.routes';
-export * from './lib/shell.component';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID, inject } from '@angular/core';
+
+export const isBrowser = () => {
+  return isPlatformBrowser(inject(PLATFORM_ID));
+};
