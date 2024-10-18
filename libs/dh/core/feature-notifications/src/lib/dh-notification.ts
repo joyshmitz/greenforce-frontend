@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 export type DhNotification = {
+  id: number;
+  type: string;
   occurredAt: Date;
-  headline: string;
-  message: string;
   read: boolean;
+  relatedToId?: string | null;
 };
